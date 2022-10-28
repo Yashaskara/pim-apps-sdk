@@ -497,9 +497,8 @@ class ProductProcessor(object):
 
         try:
             if add_parent_rows:
-                self.pim_channel_api = PIMChannelAPI(self.api_key, self.reference_id, group_by_parent=True,
-                                                     slice_id=None)
-                for product in self.pim_channel_api:
+                raw_products = self.fetch_all_pim_products
+                for product in raw_products:
                     # product = transformer.transform(product)
                     try:
                         tsv_product = list()
@@ -523,30 +522,30 @@ class ProductProcessor(object):
                         print_exc()
                         failed_count = failed_count + 1
 
-            self.pim_channel_api = PIMChannelAPI(self.api_key, self.reference_id, group_by_parent=False, slice_id=None)
-            for product in self.pim_channel_api:
-                # product = transformer.transform(product)
-                try:
-                    tsv_product = list()
-                    for schema_key in properties_schema:
-                        data = product.get(schema_key, '')
-                        if data:
-                            data = ",".join(data) if isinstance(data, list) else data
-                        else:
-                            data = str(data)
-                        tsv_product.append(data)
-                    # print(tsv_product)
-                    tsv_products.append(tsv_product)
-                    pid = product.get("pimUniqueId") or product.get("id") or product.get("sku") or random.randint(100,
-                                                                                                                  9999)
-                    self.insert_product_status(pid, "STARTED", f"Product processing started for {pid}")
-                    counter = counter + 1
-                    success_count = success_count + 1
-                    # TODO Manage the product level cleanup and final expected custom channel format
-                except Exception as e:
-                    print(e)
-                    print_exc()
-                    failed_count = failed_count + 1
+            # self.pim_channel_api = PIMChannelAPI(self.api_key, self.reference_id, group_by_parent=False, slice_id=None)
+            # for product in self.pim_channel_api:
+            #     # product = transformer.transform(product)
+            #     try:
+            #         tsv_product = list()
+            #         for schema_key in properties_schema:
+            #             data = product.get(schema_key, '')
+            #             if data:
+            #                 data = ",".join(data) if isinstance(data, list) else data
+            #             else:
+            #                 data = str(data)
+            #             tsv_product.append(data)
+            #         # print(tsv_product)
+            #         tsv_products.append(tsv_product)
+            #         pid = product.get("pimUniqueId") or product.get("id") or product.get("sku") or random.randint(100,
+            #                                                                                                       9999)
+            #         self.insert_product_status(pid, "STARTED", f"Product processing started for {pid}")
+            #         counter = counter + 1
+            #         success_count = success_count + 1
+            #         # TODO Manage the product level cleanup and final expected custom channel format
+            #     except Exception as e:
+            #         print(e)
+            #         print_exc()
+            #         failed_count = failed_count + 1
 
             if header:
                 tsv_products.insert(0, properties_schema)
