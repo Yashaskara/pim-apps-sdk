@@ -497,7 +497,7 @@ class ProductProcessor(object):
 
         try:
             if add_parent_rows:
-                raw_products = self.fetch_all_pim_products
+                raw_products = self.fetch_all_pim_products(include_variants=true)
                 for product in raw_products:
                     # product = transformer.transform(product)
                     try:
