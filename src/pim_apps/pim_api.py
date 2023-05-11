@@ -337,6 +337,7 @@ class ProductProcessor(object):
         self.pim_channel_api.group_by_parent = True if group_by_parent == "GROUP_BY_PARENT" else False
         # self.raw_products_list = []
         self.product_status_instance = ProductStatus(self.task_id)
+        self.failed_processed_products = []
 
 
     def insert_product_status(self, pid="", status="SUCCESS", status_desc=""):
@@ -580,7 +581,7 @@ class ProductProcessor(object):
             self.pim_channel_api.import_to_pim(file_url, custom_reference_id)
             print(file_url)
         elif auto_export == True:
-            file_url = self.pim_channel_api.upload_csv(self.processed_list, file_name)
+            file_url = self.pim_channel_api.upload_csv(self.processed_list, "sample_app_response_")
             self.pim_channel_api.import_to_pim(file_url, custom_reference_id)
             print(file_url)
 
